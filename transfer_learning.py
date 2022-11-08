@@ -57,15 +57,15 @@ mbv2 = models.mobilenet_v2(pretrained=True)
 
 mbv2.features[0][0].stride=(1,1)
 mbv2.features[2].conv[1][0].stride=(1,1)
-
-# Freeze it
-for param in mbv2.parameters():
-    param.requires_grad = False
     
 # replace the mbv2 classifier
 # new modules are requires_grad = True by default
 num_ftrs = mbv2.classifier[1].in_features
 mbv2.classifier = nn.Linear(num_ftrs,10)
+
+# Freeze it
+for param in mbv2.parameters():
+    param.requires_grad = False
 
 
 mbv2 = mbv2.to(device)
