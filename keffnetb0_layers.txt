@@ -1,0 +1,899 @@
+Running: kEffNetV1-2
+Model: "kEffNet-b0"
+____________________________________________________________________________________________________________________________________________________________________________________
+ Layer (type)                                              Output Shape                            Param #              Connected to                                                
+====================================================================================================================================================================================
+ input_2 (InputLayer)                                      [(None, 32, 32, 3)]                     0                    []                                                          
+                                                                                                                                                                                    
+ k_stem_conv_pad (ZeroPadding2D)                           (None, 33, 33, 3)                       0                    ['input_2[0][0]']                                           
+                                                                                                                                                                                    
+ k_stem_conv (Conv2D)                                      (None, 31, 31, 32)                      864                  ['k_stem_conv_pad[0][0]']                                   
+                                                                                                                                                                                    
+ k_stem_bn (BatchNormalization)                            (None, 31, 31, 32)                      128                  ['k_stem_conv[0][0]']                                       
+                                                                                                                                                                                    
+ k_stem_activation (Activation)                            (None, 31, 31, 32)                      0                    ['k_stem_bn[0][0]']                                         
+                                                                                                                                                                                    
+ k_block1a__0dwconv (DepthwiseConv2D)                      (None, 31, 31, 32)                      288                  ['k_stem_activation[0][0]']                                 
+                                                                                                                                                                                    
+ k_block1a__0bn (BatchNormalization)                       (None, 31, 31, 32)                      128                  ['k_block1a__0dwconv[0][0]']                                
+                                                                                                                                                                                    
+ k_block1a__0activation (Activation)                       (None, 31, 31, 32)                      0                    ['k_block1a__0bn[0][0]']                                    
+                                                                                                                                                                                    
+ k_block1a__0se_squeeze (GlobalAveragePooling2D)           (None, 32)                              0                    ['k_block1a__0activation[0][0]']                            
+                                                                                                                                                                                    
+ k_block1a__0se_reshape (Reshape)                          (None, 1, 1, 32)                        0                    ['k_block1a__0se_squeeze[0][0]']                            
+                                                                                                                                                                                    
+ k_block1a__0se_reduce_conv (Conv2D)                       (None, 1, 1, 8)                         136                  ['k_block1a__0se_reshape[0][0]']                            
+                                                                                                                                                                                    
+ k_block1a__0se_reduce (Activation)                        (None, 1, 1, 8)                         0                    ['k_block1a__0se_reduce_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block1a__0se_reduce_group_interleaved (InterleaveChanne  (None, 1, 1, 8)                        0                    ['k_block1a__0se_reduce[0][0]']                             
+ ls)                                                                                                                                                                                
+                                                                                                                                                                                    
+ k_block1a__0se_reduce_group_interconn_conv (Conv2D)       (None, 1, 1, 8)                         40                   ['k_block1a__0se_reduce_group_interleaved[0][0]']           
+                                                                                                                                                                                    
+ k_block1a__0se_reduce_group_interconn (Activation)        (None, 1, 1, 8)                         0                    ['k_block1a__0se_reduce_group_interconn_conv[0][0]']        
+                                                                                                                                                                                    
+ k_block1a__0se_reduce_inter_group_add (Add)               (None, 1, 1, 8)                         0                    ['k_block1a__0se_reduce_group_interconn[0][0]',             
+                                                                                                                         'k_block1a__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block1a__0se_expand_conv (Conv2D)                       (None, 1, 1, 32)                        288                  ['k_block1a__0se_reduce_inter_group_add[0][0]']             
+                                                                                                                                                                                    
+ k_block1a__0se_expand (Activation)                        (None, 1, 1, 32)                        0                    ['k_block1a__0se_expand_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block1a__0se_excite (Multiply)                          (None, 31, 31, 32)                      0                    ['k_block1a__0activation[0][0]',                            
+                                                                                                                         'k_block1a__0se_expand[0][0]']                             
+                                                                                                                                                                                    
+ k_block1a__0project_conv_conv (Conv2D)                    (None, 31, 31, 16)                      256                  ['k_block1a__0se_excite[0][0]']                             
+                                                                                                                                                                                    
+ k_block1a__0project_conv_bn (BatchNormalization)          (None, 31, 31, 16)                      64                   ['k_block1a__0project_conv_conv[0][0]']                     
+                                                                                                                                                                                    
+ k_block1a__0project_conv_group_interleaved (InterleaveCha  (None, 31, 31, 16)                     0                    ['k_block1a__0project_conv_bn[0][0]']                       
+ nnels)                                                                                                                                                                             
+                                                                                                                                                                                    
+ k_block1a__0project_conv_group_interconn_conv (Conv2D)    (None, 31, 31, 16)                      128                  ['k_block1a__0project_conv_group_interleaved[0][0]']        
+                                                                                                                                                                                    
+ k_block1a__0project_conv_group_interconn_bn (BatchNormali  (None, 31, 31, 16)                     64                   ['k_block1a__0project_conv_group_interconn_conv[0][0]']     
+ zation)                                                                                                                                                                            
+                                                                                                                                                                                    
+ k_block1a__0project_conv_inter_group_add (Add)            (None, 31, 31, 16)                      0                    ['k_block1a__0project_conv_group_interconn_bn[0][0]',       
+                                                                                                                         'k_block1a__0project_conv_bn[0][0]']                       
+                                                                                                                                                                                    
+ k_block2a__0expand_conv (Conv2D)                          (None, 31, 31, 96)                      1536                 ['k_block1a__0project_conv_inter_group_add[0][0]']          
+                                                                                                                                                                                    
+ k_block2a__0expand_bn (BatchNormalization)                (None, 31, 31, 96)                      384                  ['k_block2a__0expand_conv[0][0]']                           
+                                                                                                                                                                                    
+ k_block2a__0expand (Activation)                           (None, 31, 31, 96)                      0                    ['k_block2a__0expand_bn[0][0]']                             
+                                                                                                                                                                                    
+ k_block2a__0dwconv (DepthwiseConv2D)                      (None, 31, 31, 96)                      864                  ['k_block2a__0expand[0][0]']                                
+                                                                                                                                                                                    
+ k_block2a__0bn (BatchNormalization)                       (None, 31, 31, 96)                      384                  ['k_block2a__0dwconv[0][0]']                                
+                                                                                                                                                                                    
+ k_block2a__0activation (Activation)                       (None, 31, 31, 96)                      0                    ['k_block2a__0bn[0][0]']                                    
+                                                                                                                                                                                    
+ k_block2a__0se_squeeze (GlobalAveragePooling2D)           (None, 96)                              0                    ['k_block2a__0activation[0][0]']                            
+                                                                                                                                                                                    
+ k_block2a__0se_reshape (Reshape)                          (None, 1, 1, 96)                        0                    ['k_block2a__0se_squeeze[0][0]']                            
+                                                                                                                                                                                    
+ k_block2a__0se_reduce_conv (Conv2D)                       (None, 1, 1, 4)                         100                  ['k_block2a__0se_reshape[0][0]']                            
+                                                                                                                                                                                    
+ k_block2a__0se_reduce (Activation)                        (None, 1, 1, 4)                         0                    ['k_block2a__0se_reduce_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block2a__0se_reduce_group_interconn_conv (Conv2D)       (None, 1, 1, 4)                         8                    ['k_block2a__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block2a__0se_reduce_group_interconn (Activation)        (None, 1, 1, 4)                         0                    ['k_block2a__0se_reduce_group_interconn_conv[0][0]']        
+                                                                                                                                                                                    
+ k_block2a__0se_reduce_inter_group_add (Add)               (None, 1, 1, 4)                         0                    ['k_block2a__0se_reduce_group_interconn[0][0]',             
+                                                                                                                         'k_block2a__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block2a__0se_expand_conv (Conv2D)                       (None, 1, 1, 96)                        480                  ['k_block2a__0se_reduce_inter_group_add[0][0]']             
+                                                                                                                                                                                    
+ k_block2a__0se_expand (Activation)                        (None, 1, 1, 96)                        0                    ['k_block2a__0se_expand_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block2a__0se_excite (Multiply)                          (None, 31, 31, 96)                      0                    ['k_block2a__0activation[0][0]',                            
+                                                                                                                         'k_block2a__0se_expand[0][0]']                             
+                                                                                                                                                                                    
+ k_block2a__0project_conv_conv (Conv2D)                    (None, 31, 31, 24)                      384                  ['k_block2a__0se_excite[0][0]']                             
+                                                                                                                                                                                    
+ k_block2a__0project_conv_bn (BatchNormalization)          (None, 31, 31, 24)                      96                   ['k_block2a__0project_conv_conv[0][0]']                     
+                                                                                                                                                                                    
+ k_block2a__0project_conv_group_interleaved (InterleaveCha  (None, 31, 31, 24)                     0                    ['k_block2a__0project_conv_bn[0][0]']                       
+ nnels)                                                                                                                                                                             
+                                                                                                                                                                                    
+ k_block2a__0project_conv_group_interconn_conv (Conv2D)    (None, 31, 31, 24)                      96                   ['k_block2a__0project_conv_group_interleaved[0][0]']        
+                                                                                                                                                                                    
+ k_block2a__0project_conv_group_interconn_bn (BatchNormali  (None, 31, 31, 24)                     96                   ['k_block2a__0project_conv_group_interconn_conv[0][0]']     
+ zation)                                                                                                                                                                            
+                                                                                                                                                                                    
+ k_block2a__0project_conv_inter_group_add (Add)            (None, 31, 31, 24)                      0                    ['k_block2a__0project_conv_group_interconn_bn[0][0]',       
+                                                                                                                         'k_block2a__0project_conv_bn[0][0]']                       
+                                                                                                                                                                                    
+ k_block2b__0expand_conv (Conv2D)                          (None, 31, 31, 144)                     3456                 ['k_block2a__0project_conv_inter_group_add[0][0]']          
+                                                                                                                                                                                    
+ k_block2b__0expand_bn (BatchNormalization)                (None, 31, 31, 144)                     576                  ['k_block2b__0expand_conv[0][0]']                           
+                                                                                                                                                                                    
+ k_block2b__0expand (Activation)                           (None, 31, 31, 144)                     0                    ['k_block2b__0expand_bn[0][0]']                             
+                                                                                                                                                                                    
+ k_block2b__0dwconv (DepthwiseConv2D)                      (None, 31, 31, 144)                     1296                 ['k_block2b__0expand[0][0]']                                
+                                                                                                                                                                                    
+ k_block2b__0bn (BatchNormalization)                       (None, 31, 31, 144)                     576                  ['k_block2b__0dwconv[0][0]']                                
+                                                                                                                                                                                    
+ k_block2b__0activation (Activation)                       (None, 31, 31, 144)                     0                    ['k_block2b__0bn[0][0]']                                    
+                                                                                                                                                                                    
+ k_block2b__0se_squeeze (GlobalAveragePooling2D)           (None, 144)                             0                    ['k_block2b__0activation[0][0]']                            
+                                                                                                                                                                                    
+ k_block2b__0se_reshape (Reshape)                          (None, 1, 1, 144)                       0                    ['k_block2b__0se_squeeze[0][0]']                            
+                                                                                                                                                                                    
+ k_block2b__0se_reduce_conv (Conv2D)                       (None, 1, 1, 6)                         150                  ['k_block2b__0se_reshape[0][0]']                            
+                                                                                                                                                                                    
+ k_block2b__0se_reduce (Activation)                        (None, 1, 1, 6)                         0                    ['k_block2b__0se_reduce_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block2b__0se_reduce_group_interconn_conv (Conv2D)       (None, 1, 1, 6)                         12                   ['k_block2b__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block2b__0se_reduce_group_interconn (Activation)        (None, 1, 1, 6)                         0                    ['k_block2b__0se_reduce_group_interconn_conv[0][0]']        
+                                                                                                                                                                                    
+ k_block2b__0se_reduce_inter_group_add (Add)               (None, 1, 1, 6)                         0                    ['k_block2b__0se_reduce_group_interconn[0][0]',             
+                                                                                                                         'k_block2b__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block2b__0se_expand_conv (Conv2D)                       (None, 1, 1, 144)                       1008                 ['k_block2b__0se_reduce_inter_group_add[0][0]']             
+                                                                                                                                                                                    
+ k_block2b__0se_expand (Activation)                        (None, 1, 1, 144)                       0                    ['k_block2b__0se_expand_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block2b__0se_excite (Multiply)                          (None, 31, 31, 144)                     0                    ['k_block2b__0activation[0][0]',                            
+                                                                                                                         'k_block2b__0se_expand[0][0]']                             
+                                                                                                                                                                                    
+ k_block2b__0project_conv_conv (Conv2D)                    (None, 31, 31, 24)                      432                  ['k_block2b__0se_excite[0][0]']                             
+                                                                                                                                                                                    
+ k_block2b__0project_conv_bn (BatchNormalization)          (None, 31, 31, 24)                      96                   ['k_block2b__0project_conv_conv[0][0]']                     
+                                                                                                                                                                                    
+ k_block2b__0project_conv_group_interleaved (InterleaveCha  (None, 31, 31, 24)                     0                    ['k_block2b__0project_conv_bn[0][0]']                       
+ nnels)                                                                                                                                                                             
+                                                                                                                                                                                    
+ k_block2b__0project_conv_group_interconn_conv (Conv2D)    (None, 31, 31, 24)                      72                   ['k_block2b__0project_conv_group_interleaved[0][0]']        
+                                                                                                                                                                                    
+ k_block2b__0project_conv_group_interconn_bn (BatchNormali  (None, 31, 31, 24)                     96                   ['k_block2b__0project_conv_group_interconn_conv[0][0]']     
+ zation)                                                                                                                                                                            
+                                                                                                                                                                                    
+ k_block2b__0project_conv_inter_group_add (Add)            (None, 31, 31, 24)                      0                    ['k_block2b__0project_conv_group_interconn_bn[0][0]',       
+                                                                                                                         'k_block2b__0project_conv_bn[0][0]']                       
+                                                                                                                                                                                    
+ k_block2b__0drop (Dropout)                                (None, 31, 31, 24)                      0                    ['k_block2b__0project_conv_inter_group_add[0][0]']          
+                                                                                                                                                                                    
+ k_block2b__0add (Add)                                     (None, 31, 31, 24)                      0                    ['k_block2b__0drop[0][0]',                                  
+                                                                                                                         'k_block2a__0project_conv_inter_group_add[0][0]']          
+                                                                                                                                                                                    
+ k_block3a__0expand_conv (Conv2D)                          (None, 31, 31, 144)                     3456                 ['k_block2b__0add[0][0]']                                   
+                                                                                                                                                                                    
+ k_block3a__0expand_bn (BatchNormalization)                (None, 31, 31, 144)                     576                  ['k_block3a__0expand_conv[0][0]']                           
+                                                                                                                                                                                    
+ k_block3a__0expand (Activation)                           (None, 31, 31, 144)                     0                    ['k_block3a__0expand_bn[0][0]']                             
+                                                                                                                                                                                    
+ k_block3a__0dwconv (DepthwiseConv2D)                      (None, 31, 31, 144)                     3600                 ['k_block3a__0expand[0][0]']                                
+                                                                                                                                                                                    
+ k_block3a__0bn (BatchNormalization)                       (None, 31, 31, 144)                     576                  ['k_block3a__0dwconv[0][0]']                                
+                                                                                                                                                                                    
+ k_block3a__0activation (Activation)                       (None, 31, 31, 144)                     0                    ['k_block3a__0bn[0][0]']                                    
+                                                                                                                                                                                    
+ k_block3a__0se_squeeze (GlobalAveragePooling2D)           (None, 144)                             0                    ['k_block3a__0activation[0][0]']                            
+                                                                                                                                                                                    
+ k_block3a__0se_reshape (Reshape)                          (None, 1, 1, 144)                       0                    ['k_block3a__0se_squeeze[0][0]']                            
+                                                                                                                                                                                    
+ k_block3a__0se_reduce_conv (Conv2D)                       (None, 1, 1, 6)                         150                  ['k_block3a__0se_reshape[0][0]']                            
+                                                                                                                                                                                    
+ k_block3a__0se_reduce (Activation)                        (None, 1, 1, 6)                         0                    ['k_block3a__0se_reduce_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block3a__0se_reduce_group_interconn_conv (Conv2D)       (None, 1, 1, 6)                         12                   ['k_block3a__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block3a__0se_reduce_group_interconn (Activation)        (None, 1, 1, 6)                         0                    ['k_block3a__0se_reduce_group_interconn_conv[0][0]']        
+                                                                                                                                                                                    
+ k_block3a__0se_reduce_inter_group_add (Add)               (None, 1, 1, 6)                         0                    ['k_block3a__0se_reduce_group_interconn[0][0]',             
+                                                                                                                         'k_block3a__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block3a__0se_expand_conv (Conv2D)                       (None, 1, 1, 144)                       1008                 ['k_block3a__0se_reduce_inter_group_add[0][0]']             
+                                                                                                                                                                                    
+ k_block3a__0se_expand (Activation)                        (None, 1, 1, 144)                       0                    ['k_block3a__0se_expand_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block3a__0se_excite (Multiply)                          (None, 31, 31, 144)                     0                    ['k_block3a__0activation[0][0]',                            
+                                                                                                                         'k_block3a__0se_expand[0][0]']                             
+                                                                                                                                                                                    
+ k_block3a__0project_conv_conv (Conv2D)                    (None, 31, 31, 40)                      720                  ['k_block3a__0se_excite[0][0]']                             
+                                                                                                                                                                                    
+ k_block3a__0project_conv_bn (BatchNormalization)          (None, 31, 31, 40)                      160                  ['k_block3a__0project_conv_conv[0][0]']                     
+                                                                                                                                                                                    
+ k_block3a__0project_conv_group_interleaved (InterleaveCha  (None, 31, 31, 40)                     0                    ['k_block3a__0project_conv_bn[0][0]']                       
+ nnels)                                                                                                                                                                             
+                                                                                                                                                                                    
+ k_block3a__0project_conv_group_interconn_conv (Conv2D)    (None, 31, 31, 40)                      200                  ['k_block3a__0project_conv_group_interleaved[0][0]']        
+                                                                                                                                                                                    
+ k_block3a__0project_conv_group_interconn_bn (BatchNormali  (None, 31, 31, 40)                     160                  ['k_block3a__0project_conv_group_interconn_conv[0][0]']     
+ zation)                                                                                                                                                                            
+                                                                                                                                                                                    
+ k_block3a__0project_conv_inter_group_add (Add)            (None, 31, 31, 40)                      0                    ['k_block3a__0project_conv_group_interconn_bn[0][0]',       
+                                                                                                                         'k_block3a__0project_conv_bn[0][0]']                       
+                                                                                                                                                                                    
+ k_block3b__0expand_conv (Conv2D)                          (None, 31, 31, 240)                     4800                 ['k_block3a__0project_conv_inter_group_add[0][0]']          
+                                                                                                                                                                                    
+ k_block3b__0expand_bn (BatchNormalization)                (None, 31, 31, 240)                     960                  ['k_block3b__0expand_conv[0][0]']                           
+                                                                                                                                                                                    
+ k_block3b__0expand (Activation)                           (None, 31, 31, 240)                     0                    ['k_block3b__0expand_bn[0][0]']                             
+                                                                                                                                                                                    
+ k_block3b__0expand_group_interleaved (InterleaveChannels)  (None, 31, 31, 240)                    0                    ['k_block3b__0expand[0][0]']                                
+                                                                                                                                                                                    
+ k_block3b__0dwconv (DepthwiseConv2D)                      (None, 31, 31, 240)                     6000                 ['k_block3b__0expand_group_interleaved[0][0]']              
+                                                                                                                                                                                    
+ k_block3b__0bn (BatchNormalization)                       (None, 31, 31, 240)                     960                  ['k_block3b__0dwconv[0][0]']                                
+                                                                                                                                                                                    
+ k_block3b__0activation (Activation)                       (None, 31, 31, 240)                     0                    ['k_block3b__0bn[0][0]']                                    
+                                                                                                                                                                                    
+ k_block3b__0se_squeeze (GlobalAveragePooling2D)           (None, 240)                             0                    ['k_block3b__0activation[0][0]']                            
+                                                                                                                                                                                    
+ k_block3b__0se_reshape (Reshape)                          (None, 1, 1, 240)                       0                    ['k_block3b__0se_squeeze[0][0]']                            
+                                                                                                                                                                                    
+ k_block3b__0se_reduce_conv (Conv2D)                       (None, 1, 1, 10)                        250                  ['k_block3b__0se_reshape[0][0]']                            
+                                                                                                                                                                                    
+ k_block3b__0se_reduce (Activation)                        (None, 1, 1, 10)                        0                    ['k_block3b__0se_reduce_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block3b__0se_reduce_group_interconn_conv (Conv2D)       (None, 1, 1, 10)                        20                   ['k_block3b__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block3b__0se_reduce_group_interconn (Activation)        (None, 1, 1, 10)                        0                    ['k_block3b__0se_reduce_group_interconn_conv[0][0]']        
+                                                                                                                                                                                    
+ k_block3b__0se_reduce_inter_group_add (Add)               (None, 1, 1, 10)                        0                    ['k_block3b__0se_reduce_group_interconn[0][0]',             
+                                                                                                                         'k_block3b__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block3b__0se_expand_conv (Conv2D)                       (None, 1, 1, 240)                       2640                 ['k_block3b__0se_reduce_inter_group_add[0][0]']             
+                                                                                                                                                                                    
+ k_block3b__0se_expand (Activation)                        (None, 1, 1, 240)                       0                    ['k_block3b__0se_expand_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block3b__0se_excite (Multiply)                          (None, 31, 31, 240)                     0                    ['k_block3b__0activation[0][0]',                            
+                                                                                                                         'k_block3b__0se_expand[0][0]']                             
+                                                                                                                                                                                    
+ k_block3b__0project_conv_conv (Conv2D)                    (None, 31, 31, 40)                      960                  ['k_block3b__0se_excite[0][0]']                             
+                                                                                                                                                                                    
+ k_block3b__0project_conv_bn (BatchNormalization)          (None, 31, 31, 40)                      160                  ['k_block3b__0project_conv_conv[0][0]']                     
+                                                                                                                                                                                    
+ k_block3b__0project_conv_group_interleaved (InterleaveCha  (None, 31, 31, 40)                     0                    ['k_block3b__0project_conv_bn[0][0]']                       
+ nnels)                                                                                                                                                                             
+                                                                                                                                                                                    
+ k_block3b__0project_conv_group_interconn_conv (Conv2D)    (None, 31, 31, 40)                      160                  ['k_block3b__0project_conv_group_interleaved[0][0]']        
+                                                                                                                                                                                    
+ k_block3b__0project_conv_group_interconn_bn (BatchNormali  (None, 31, 31, 40)                     160                  ['k_block3b__0project_conv_group_interconn_conv[0][0]']     
+ zation)                                                                                                                                                                            
+                                                                                                                                                                                    
+ k_block3b__0project_conv_inter_group_add (Add)            (None, 31, 31, 40)                      0                    ['k_block3b__0project_conv_group_interconn_bn[0][0]',       
+                                                                                                                         'k_block3b__0project_conv_bn[0][0]']                       
+                                                                                                                                                                                    
+ k_block3b__0drop (Dropout)                                (None, 31, 31, 40)                      0                    ['k_block3b__0project_conv_inter_group_add[0][0]']          
+                                                                                                                                                                                    
+ k_block3b__0add (Add)                                     (None, 31, 31, 40)                      0                    ['k_block3b__0drop[0][0]',                                  
+                                                                                                                         'k_block3a__0project_conv_inter_group_add[0][0]']          
+                                                                                                                                                                                    
+ k_block4a__0expand_conv (Conv2D)                          (None, 31, 31, 240)                     4800                 ['k_block3b__0add[0][0]']                                   
+                                                                                                                                                                                    
+ k_block4a__0expand_bn (BatchNormalization)                (None, 31, 31, 240)                     960                  ['k_block4a__0expand_conv[0][0]']                           
+                                                                                                                                                                                    
+ k_block4a__0expand (Activation)                           (None, 31, 31, 240)                     0                    ['k_block4a__0expand_bn[0][0]']                             
+                                                                                                                                                                                    
+ k_block4a__0expand_group_interleaved (InterleaveChannels)  (None, 31, 31, 240)                    0                    ['k_block4a__0expand[0][0]']                                
+                                                                                                                                                                                    
+ k_block4a__0dwconv_pad (ZeroPadding2D)                    (None, 33, 33, 240)                     0                    ['k_block4a__0expand_group_interleaved[0][0]']              
+                                                                                                                                                                                    
+ k_block4a__0dwconv (DepthwiseConv2D)                      (None, 16, 16, 240)                     2160                 ['k_block4a__0dwconv_pad[0][0]']                            
+                                                                                                                                                                                    
+ k_block4a__0bn (BatchNormalization)                       (None, 16, 16, 240)                     960                  ['k_block4a__0dwconv[0][0]']                                
+                                                                                                                                                                                    
+ k_block4a__0activation (Activation)                       (None, 16, 16, 240)                     0                    ['k_block4a__0bn[0][0]']                                    
+                                                                                                                                                                                    
+ k_block4a__0se_squeeze (GlobalAveragePooling2D)           (None, 240)                             0                    ['k_block4a__0activation[0][0]']                            
+                                                                                                                                                                                    
+ k_block4a__0se_reshape (Reshape)                          (None, 1, 1, 240)                       0                    ['k_block4a__0se_squeeze[0][0]']                            
+                                                                                                                                                                                    
+ k_block4a__0se_reduce_conv (Conv2D)                       (None, 1, 1, 10)                        250                  ['k_block4a__0se_reshape[0][0]']                            
+                                                                                                                                                                                    
+ k_block4a__0se_reduce (Activation)                        (None, 1, 1, 10)                        0                    ['k_block4a__0se_reduce_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block4a__0se_reduce_group_interconn_conv (Conv2D)       (None, 1, 1, 10)                        20                   ['k_block4a__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block4a__0se_reduce_group_interconn (Activation)        (None, 1, 1, 10)                        0                    ['k_block4a__0se_reduce_group_interconn_conv[0][0]']        
+                                                                                                                                                                                    
+ k_block4a__0se_reduce_inter_group_add (Add)               (None, 1, 1, 10)                        0                    ['k_block4a__0se_reduce_group_interconn[0][0]',             
+                                                                                                                         'k_block4a__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block4a__0se_expand_conv (Conv2D)                       (None, 1, 1, 240)                       2640                 ['k_block4a__0se_reduce_inter_group_add[0][0]']             
+                                                                                                                                                                                    
+ k_block4a__0se_expand (Activation)                        (None, 1, 1, 240)                       0                    ['k_block4a__0se_expand_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block4a__0se_excite (Multiply)                          (None, 16, 16, 240)                     0                    ['k_block4a__0activation[0][0]',                            
+                                                                                                                         'k_block4a__0se_expand[0][0]']                             
+                                                                                                                                                                                    
+ k_block4a__0project_conv_conv (Conv2D)                    (None, 16, 16, 80)                      1920                 ['k_block4a__0se_excite[0][0]']                             
+                                                                                                                                                                                    
+ k_block4a__0project_conv_bn (BatchNormalization)          (None, 16, 16, 80)                      320                  ['k_block4a__0project_conv_conv[0][0]']                     
+                                                                                                                                                                                    
+ k_block4a__0project_conv_group_interleaved (InterleaveCha  (None, 16, 16, 80)                     0                    ['k_block4a__0project_conv_bn[0][0]']                       
+ nnels)                                                                                                                                                                             
+                                                                                                                                                                                    
+ k_block4a__0project_conv_group_interconn_conv (Conv2D)    (None, 16, 16, 80)                      640                  ['k_block4a__0project_conv_group_interleaved[0][0]']        
+                                                                                                                                                                                    
+ k_block4a__0project_conv_group_interconn_bn (BatchNormali  (None, 16, 16, 80)                     320                  ['k_block4a__0project_conv_group_interconn_conv[0][0]']     
+ zation)                                                                                                                                                                            
+                                                                                                                                                                                    
+ k_block4a__0project_conv_inter_group_add (Add)            (None, 16, 16, 80)                      0                    ['k_block4a__0project_conv_group_interconn_bn[0][0]',       
+                                                                                                                         'k_block4a__0project_conv_bn[0][0]']                       
+                                                                                                                                                                                    
+ k_block4b__0expand_conv (Conv2D)                          (None, 16, 16, 480)                     7680                 ['k_block4a__0project_conv_inter_group_add[0][0]']          
+                                                                                                                                                                                    
+ k_block4b__0expand_bn (BatchNormalization)                (None, 16, 16, 480)                     1920                 ['k_block4b__0expand_conv[0][0]']                           
+                                                                                                                                                                                    
+ k_block4b__0expand (Activation)                           (None, 16, 16, 480)                     0                    ['k_block4b__0expand_bn[0][0]']                             
+                                                                                                                                                                                    
+ k_block4b__0expand_group_interleaved (InterleaveChannels)  (None, 16, 16, 480)                    0                    ['k_block4b__0expand[0][0]']                                
+                                                                                                                                                                                    
+ k_block4b__0dwconv (DepthwiseConv2D)                      (None, 16, 16, 480)                     4320                 ['k_block4b__0expand_group_interleaved[0][0]']              
+                                                                                                                                                                                    
+ k_block4b__0bn (BatchNormalization)                       (None, 16, 16, 480)                     1920                 ['k_block4b__0dwconv[0][0]']                                
+                                                                                                                                                                                    
+ k_block4b__0activation (Activation)                       (None, 16, 16, 480)                     0                    ['k_block4b__0bn[0][0]']                                    
+                                                                                                                                                                                    
+ k_block4b__0se_squeeze (GlobalAveragePooling2D)           (None, 480)                             0                    ['k_block4b__0activation[0][0]']                            
+                                                                                                                                                                                    
+ k_block4b__0se_reshape (Reshape)                          (None, 1, 1, 480)                       0                    ['k_block4b__0se_squeeze[0][0]']                            
+                                                                                                                                                                                    
+ k_block4b__0se_reduce_conv (Conv2D)                       (None, 1, 1, 20)                        500                  ['k_block4b__0se_reshape[0][0]']                            
+                                                                                                                                                                                    
+ k_block4b__0se_reduce (Activation)                        (None, 1, 1, 20)                        0                    ['k_block4b__0se_reduce_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block4b__0se_reduce_group_interconn_conv (Conv2D)       (None, 1, 1, 20)                        40                   ['k_block4b__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block4b__0se_reduce_group_interconn (Activation)        (None, 1, 1, 20)                        0                    ['k_block4b__0se_reduce_group_interconn_conv[0][0]']        
+                                                                                                                                                                                    
+ k_block4b__0se_reduce_inter_group_add (Add)               (None, 1, 1, 20)                        0                    ['k_block4b__0se_reduce_group_interconn[0][0]',             
+                                                                                                                         'k_block4b__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block4b__0se_expand_conv (Conv2D)                       (None, 1, 1, 480)                       10080                ['k_block4b__0se_reduce_inter_group_add[0][0]']             
+                                                                                                                                                                                    
+ k_block4b__0se_expand (Activation)                        (None, 1, 1, 480)                       0                    ['k_block4b__0se_expand_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block4b__0se_excite (Multiply)                          (None, 16, 16, 480)                     0                    ['k_block4b__0activation[0][0]',                            
+                                                                                                                         'k_block4b__0se_expand[0][0]']                             
+                                                                                                                                                                                    
+ k_block4b__0project_conv_conv (Conv2D)                    (None, 16, 16, 80)                      1920                 ['k_block4b__0se_excite[0][0]']                             
+                                                                                                                                                                                    
+ k_block4b__0project_conv_bn (BatchNormalization)          (None, 16, 16, 80)                      320                  ['k_block4b__0project_conv_conv[0][0]']                     
+                                                                                                                                                                                    
+ k_block4b__0project_conv_group_interleaved (InterleaveCha  (None, 16, 16, 80)                     0                    ['k_block4b__0project_conv_bn[0][0]']                       
+ nnels)                                                                                                                                                                             
+                                                                                                                                                                                    
+ k_block4b__0project_conv_group_interconn_conv (Conv2D)    (None, 16, 16, 80)                      320                  ['k_block4b__0project_conv_group_interleaved[0][0]']        
+                                                                                                                                                                                    
+ k_block4b__0project_conv_group_interconn_bn (BatchNormali  (None, 16, 16, 80)                     320                  ['k_block4b__0project_conv_group_interconn_conv[0][0]']     
+ zation)                                                                                                                                                                            
+                                                                                                                                                                                    
+ k_block4b__0project_conv_inter_group_add (Add)            (None, 16, 16, 80)                      0                    ['k_block4b__0project_conv_group_interconn_bn[0][0]',       
+                                                                                                                         'k_block4b__0project_conv_bn[0][0]']                       
+                                                                                                                                                                                    
+ k_block4b__0drop (Dropout)                                (None, 16, 16, 80)                      0                    ['k_block4b__0project_conv_inter_group_add[0][0]']          
+                                                                                                                                                                                    
+ k_block4b__0add (Add)                                     (None, 16, 16, 80)                      0                    ['k_block4b__0drop[0][0]',                                  
+                                                                                                                         'k_block4a__0project_conv_inter_group_add[0][0]']          
+                                                                                                                                                                                    
+ k_block4c__0expand_conv (Conv2D)                          (None, 16, 16, 480)                     7680                 ['k_block4b__0add[0][0]']                                   
+                                                                                                                                                                                    
+ k_block4c__0expand_bn (BatchNormalization)                (None, 16, 16, 480)                     1920                 ['k_block4c__0expand_conv[0][0]']                           
+                                                                                                                                                                                    
+ k_block4c__0expand (Activation)                           (None, 16, 16, 480)                     0                    ['k_block4c__0expand_bn[0][0]']                             
+                                                                                                                                                                                    
+ k_block4c__0expand_group_interleaved (InterleaveChannels)  (None, 16, 16, 480)                    0                    ['k_block4c__0expand[0][0]']                                
+                                                                                                                                                                                    
+ k_block4c__0dwconv (DepthwiseConv2D)                      (None, 16, 16, 480)                     4320                 ['k_block4c__0expand_group_interleaved[0][0]']              
+                                                                                                                                                                                    
+ k_block4c__0bn (BatchNormalization)                       (None, 16, 16, 480)                     1920                 ['k_block4c__0dwconv[0][0]']                                
+                                                                                                                                                                                    
+ k_block4c__0activation (Activation)                       (None, 16, 16, 480)                     0                    ['k_block4c__0bn[0][0]']                                    
+                                                                                                                                                                                    
+ k_block4c__0se_squeeze (GlobalAveragePooling2D)           (None, 480)                             0                    ['k_block4c__0activation[0][0]']                            
+                                                                                                                                                                                    
+ k_block4c__0se_reshape (Reshape)                          (None, 1, 1, 480)                       0                    ['k_block4c__0se_squeeze[0][0]']                            
+                                                                                                                                                                                    
+ k_block4c__0se_reduce_conv (Conv2D)                       (None, 1, 1, 20)                        500                  ['k_block4c__0se_reshape[0][0]']                            
+                                                                                                                                                                                    
+ k_block4c__0se_reduce (Activation)                        (None, 1, 1, 20)                        0                    ['k_block4c__0se_reduce_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block4c__0se_reduce_group_interconn_conv (Conv2D)       (None, 1, 1, 20)                        40                   ['k_block4c__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block4c__0se_reduce_group_interconn (Activation)        (None, 1, 1, 20)                        0                    ['k_block4c__0se_reduce_group_interconn_conv[0][0]']        
+                                                                                                                                                                                    
+ k_block4c__0se_reduce_inter_group_add (Add)               (None, 1, 1, 20)                        0                    ['k_block4c__0se_reduce_group_interconn[0][0]',             
+                                                                                                                         'k_block4c__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block4c__0se_expand_conv (Conv2D)                       (None, 1, 1, 480)                       10080                ['k_block4c__0se_reduce_inter_group_add[0][0]']             
+                                                                                                                                                                                    
+ k_block4c__0se_expand (Activation)                        (None, 1, 1, 480)                       0                    ['k_block4c__0se_expand_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block4c__0se_excite (Multiply)                          (None, 16, 16, 480)                     0                    ['k_block4c__0activation[0][0]',                            
+                                                                                                                         'k_block4c__0se_expand[0][0]']                             
+                                                                                                                                                                                    
+ k_block4c__0project_conv_conv (Conv2D)                    (None, 16, 16, 80)                      1920                 ['k_block4c__0se_excite[0][0]']                             
+                                                                                                                                                                                    
+ k_block4c__0project_conv_bn (BatchNormalization)          (None, 16, 16, 80)                      320                  ['k_block4c__0project_conv_conv[0][0]']                     
+                                                                                                                                                                                    
+ k_block4c__0project_conv_group_interleaved (InterleaveCha  (None, 16, 16, 80)                     0                    ['k_block4c__0project_conv_bn[0][0]']                       
+ nnels)                                                                                                                                                                             
+                                                                                                                                                                                    
+ k_block4c__0project_conv_group_interconn_conv (Conv2D)    (None, 16, 16, 80)                      320                  ['k_block4c__0project_conv_group_interleaved[0][0]']        
+                                                                                                                                                                                    
+ k_block4c__0project_conv_group_interconn_bn (BatchNormali  (None, 16, 16, 80)                     320                  ['k_block4c__0project_conv_group_interconn_conv[0][0]']     
+ zation)                                                                                                                                                                            
+                                                                                                                                                                                    
+ k_block4c__0project_conv_inter_group_add (Add)            (None, 16, 16, 80)                      0                    ['k_block4c__0project_conv_group_interconn_bn[0][0]',       
+                                                                                                                         'k_block4c__0project_conv_bn[0][0]']                       
+                                                                                                                                                                                    
+ k_block4c__0drop (Dropout)                                (None, 16, 16, 80)                      0                    ['k_block4c__0project_conv_inter_group_add[0][0]']          
+                                                                                                                                                                                    
+ k_block4c__0add (Add)                                     (None, 16, 16, 80)                      0                    ['k_block4c__0drop[0][0]',                                  
+                                                                                                                         'k_block4b__0add[0][0]']                                   
+                                                                                                                                                                                    
+ k_block5a__0expand_conv (Conv2D)                          (None, 16, 16, 480)                     7680                 ['k_block4c__0add[0][0]']                                   
+                                                                                                                                                                                    
+ k_block5a__0expand_bn (BatchNormalization)                (None, 16, 16, 480)                     1920                 ['k_block5a__0expand_conv[0][0]']                           
+                                                                                                                                                                                    
+ k_block5a__0expand (Activation)                           (None, 16, 16, 480)                     0                    ['k_block5a__0expand_bn[0][0]']                             
+                                                                                                                                                                                    
+ k_block5a__0expand_group_interleaved (InterleaveChannels)  (None, 16, 16, 480)                    0                    ['k_block5a__0expand[0][0]']                                
+                                                                                                                                                                                    
+ k_block5a__0dwconv (DepthwiseConv2D)                      (None, 16, 16, 480)                     12000                ['k_block5a__0expand_group_interleaved[0][0]']              
+                                                                                                                                                                                    
+ k_block5a__0bn (BatchNormalization)                       (None, 16, 16, 480)                     1920                 ['k_block5a__0dwconv[0][0]']                                
+                                                                                                                                                                                    
+ k_block5a__0activation (Activation)                       (None, 16, 16, 480)                     0                    ['k_block5a__0bn[0][0]']                                    
+                                                                                                                                                                                    
+ k_block5a__0se_squeeze (GlobalAveragePooling2D)           (None, 480)                             0                    ['k_block5a__0activation[0][0]']                            
+                                                                                                                                                                                    
+ k_block5a__0se_reshape (Reshape)                          (None, 1, 1, 480)                       0                    ['k_block5a__0se_squeeze[0][0]']                            
+                                                                                                                                                                                    
+ k_block5a__0se_reduce_conv (Conv2D)                       (None, 1, 1, 20)                        500                  ['k_block5a__0se_reshape[0][0]']                            
+                                                                                                                                                                                    
+ k_block5a__0se_reduce (Activation)                        (None, 1, 1, 20)                        0                    ['k_block5a__0se_reduce_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block5a__0se_reduce_group_interconn_conv (Conv2D)       (None, 1, 1, 20)                        40                   ['k_block5a__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block5a__0se_reduce_group_interconn (Activation)        (None, 1, 1, 20)                        0                    ['k_block5a__0se_reduce_group_interconn_conv[0][0]']        
+                                                                                                                                                                                    
+ k_block5a__0se_reduce_inter_group_add (Add)               (None, 1, 1, 20)                        0                    ['k_block5a__0se_reduce_group_interconn[0][0]',             
+                                                                                                                         'k_block5a__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block5a__0se_expand_conv (Conv2D)                       (None, 1, 1, 480)                       10080                ['k_block5a__0se_reduce_inter_group_add[0][0]']             
+                                                                                                                                                                                    
+ k_block5a__0se_expand (Activation)                        (None, 1, 1, 480)                       0                    ['k_block5a__0se_expand_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block5a__0se_excite (Multiply)                          (None, 16, 16, 480)                     0                    ['k_block5a__0activation[0][0]',                            
+                                                                                                                         'k_block5a__0se_expand[0][0]']                             
+                                                                                                                                                                                    
+ k_block5a__0project_conv_conv (Conv2D)                    (None, 16, 16, 112)                     3360                 ['k_block5a__0se_excite[0][0]']                             
+                                                                                                                                                                                    
+ k_block5a__0project_conv_bn (BatchNormalization)          (None, 16, 16, 112)                     448                  ['k_block5a__0project_conv_conv[0][0]']                     
+                                                                                                                                                                                    
+ k_block5a__0project_conv_group_interleaved (InterleaveCha  (None, 16, 16, 112)                    0                    ['k_block5a__0project_conv_bn[0][0]']                       
+ nnels)                                                                                                                                                                             
+                                                                                                                                                                                    
+ k_block5a__0project_conv_group_interconn_conv (Conv2D)    (None, 16, 16, 112)                     784                  ['k_block5a__0project_conv_group_interleaved[0][0]']        
+                                                                                                                                                                                    
+ k_block5a__0project_conv_group_interconn_bn (BatchNormali  (None, 16, 16, 112)                    448                  ['k_block5a__0project_conv_group_interconn_conv[0][0]']     
+ zation)                                                                                                                                                                            
+                                                                                                                                                                                    
+ k_block5a__0project_conv_inter_group_add (Add)            (None, 16, 16, 112)                     0                    ['k_block5a__0project_conv_group_interconn_bn[0][0]',       
+                                                                                                                         'k_block5a__0project_conv_bn[0][0]']                       
+                                                                                                                                                                                    
+ k_block5b__0expand_conv (Conv2D)                          (None, 16, 16, 672)                     10752                ['k_block5a__0project_conv_inter_group_add[0][0]']          
+                                                                                                                                                                                    
+ k_block5b__0expand_bn (BatchNormalization)                (None, 16, 16, 672)                     2688                 ['k_block5b__0expand_conv[0][0]']                           
+                                                                                                                                                                                    
+ k_block5b__0expand (Activation)                           (None, 16, 16, 672)                     0                    ['k_block5b__0expand_bn[0][0]']                             
+                                                                                                                                                                                    
+ k_block5b__0expand_group_interleaved (InterleaveChannels)  (None, 16, 16, 672)                    0                    ['k_block5b__0expand[0][0]']                                
+                                                                                                                                                                                    
+ k_block5b__0dwconv (DepthwiseConv2D)                      (None, 16, 16, 672)                     16800                ['k_block5b__0expand_group_interleaved[0][0]']              
+                                                                                                                                                                                    
+ k_block5b__0bn (BatchNormalization)                       (None, 16, 16, 672)                     2688                 ['k_block5b__0dwconv[0][0]']                                
+                                                                                                                                                                                    
+ k_block5b__0activation (Activation)                       (None, 16, 16, 672)                     0                    ['k_block5b__0bn[0][0]']                                    
+                                                                                                                                                                                    
+ k_block5b__0se_squeeze (GlobalAveragePooling2D)           (None, 672)                             0                    ['k_block5b__0activation[0][0]']                            
+                                                                                                                                                                                    
+ k_block5b__0se_reshape (Reshape)                          (None, 1, 1, 672)                       0                    ['k_block5b__0se_squeeze[0][0]']                            
+                                                                                                                                                                                    
+ k_block5b__0se_reduce_conv (Conv2D)                       (None, 1, 1, 28)                        700                  ['k_block5b__0se_reshape[0][0]']                            
+                                                                                                                                                                                    
+ k_block5b__0se_reduce (Activation)                        (None, 1, 1, 28)                        0                    ['k_block5b__0se_reduce_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block5b__0se_reduce_group_interconn_conv (Conv2D)       (None, 1, 1, 28)                        56                   ['k_block5b__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block5b__0se_reduce_group_interconn (Activation)        (None, 1, 1, 28)                        0                    ['k_block5b__0se_reduce_group_interconn_conv[0][0]']        
+                                                                                                                                                                                    
+ k_block5b__0se_reduce_inter_group_add (Add)               (None, 1, 1, 28)                        0                    ['k_block5b__0se_reduce_group_interconn[0][0]',             
+                                                                                                                         'k_block5b__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block5b__0se_expand_conv (Conv2D)                       (None, 1, 1, 672)                       19488                ['k_block5b__0se_reduce_inter_group_add[0][0]']             
+                                                                                                                                                                                    
+ k_block5b__0se_expand (Activation)                        (None, 1, 1, 672)                       0                    ['k_block5b__0se_expand_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block5b__0se_excite (Multiply)                          (None, 16, 16, 672)                     0                    ['k_block5b__0activation[0][0]',                            
+                                                                                                                         'k_block5b__0se_expand[0][0]']                             
+                                                                                                                                                                                    
+ k_block5b__0project_conv_conv (Conv2D)                    (None, 16, 16, 112)                     2688                 ['k_block5b__0se_excite[0][0]']                             
+                                                                                                                                                                                    
+ k_block5b__0project_conv_bn (BatchNormalization)          (None, 16, 16, 112)                     448                  ['k_block5b__0project_conv_conv[0][0]']                     
+                                                                                                                                                                                    
+ k_block5b__0project_conv_group_interleaved (InterleaveCha  (None, 16, 16, 112)                    0                    ['k_block5b__0project_conv_bn[0][0]']                       
+ nnels)                                                                                                                                                                             
+                                                                                                                                                                                    
+ k_block5b__0project_conv_group_interconn_conv (Conv2D)    (None, 16, 16, 112)                     448                  ['k_block5b__0project_conv_group_interleaved[0][0]']        
+                                                                                                                                                                                    
+ k_block5b__0project_conv_group_interconn_bn (BatchNormali  (None, 16, 16, 112)                    448                  ['k_block5b__0project_conv_group_interconn_conv[0][0]']     
+ zation)                                                                                                                                                                            
+                                                                                                                                                                                    
+ k_block5b__0project_conv_inter_group_add (Add)            (None, 16, 16, 112)                     0                    ['k_block5b__0project_conv_group_interconn_bn[0][0]',       
+                                                                                                                         'k_block5b__0project_conv_bn[0][0]']                       
+                                                                                                                                                                                    
+ k_block5b__0drop (Dropout)                                (None, 16, 16, 112)                     0                    ['k_block5b__0project_conv_inter_group_add[0][0]']          
+                                                                                                                                                                                    
+ k_block5b__0add (Add)                                     (None, 16, 16, 112)                     0                    ['k_block5b__0drop[0][0]',                                  
+                                                                                                                         'k_block5a__0project_conv_inter_group_add[0][0]']          
+                                                                                                                                                                                    
+ k_block5c__0expand_conv (Conv2D)                          (None, 16, 16, 672)                     10752                ['k_block5b__0add[0][0]']                                   
+                                                                                                                                                                                    
+ k_block5c__0expand_bn (BatchNormalization)                (None, 16, 16, 672)                     2688                 ['k_block5c__0expand_conv[0][0]']                           
+                                                                                                                                                                                    
+ k_block5c__0expand (Activation)                           (None, 16, 16, 672)                     0                    ['k_block5c__0expand_bn[0][0]']                             
+                                                                                                                                                                                    
+ k_block5c__0expand_group_interleaved (InterleaveChannels)  (None, 16, 16, 672)                    0                    ['k_block5c__0expand[0][0]']                                
+                                                                                                                                                                                    
+ k_block5c__0dwconv (DepthwiseConv2D)                      (None, 16, 16, 672)                     16800                ['k_block5c__0expand_group_interleaved[0][0]']              
+                                                                                                                                                                                    
+ k_block5c__0bn (BatchNormalization)                       (None, 16, 16, 672)                     2688                 ['k_block5c__0dwconv[0][0]']                                
+                                                                                                                                                                                    
+ k_block5c__0activation (Activation)                       (None, 16, 16, 672)                     0                    ['k_block5c__0bn[0][0]']                                    
+                                                                                                                                                                                    
+ k_block5c__0se_squeeze (GlobalAveragePooling2D)           (None, 672)                             0                    ['k_block5c__0activation[0][0]']                            
+                                                                                                                                                                                    
+ k_block5c__0se_reshape (Reshape)                          (None, 1, 1, 672)                       0                    ['k_block5c__0se_squeeze[0][0]']                            
+                                                                                                                                                                                    
+ k_block5c__0se_reduce_conv (Conv2D)                       (None, 1, 1, 28)                        700                  ['k_block5c__0se_reshape[0][0]']                            
+                                                                                                                                                                                    
+ k_block5c__0se_reduce (Activation)                        (None, 1, 1, 28)                        0                    ['k_block5c__0se_reduce_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block5c__0se_reduce_group_interconn_conv (Conv2D)       (None, 1, 1, 28)                        56                   ['k_block5c__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block5c__0se_reduce_group_interconn (Activation)        (None, 1, 1, 28)                        0                    ['k_block5c__0se_reduce_group_interconn_conv[0][0]']        
+                                                                                                                                                                                    
+ k_block5c__0se_reduce_inter_group_add (Add)               (None, 1, 1, 28)                        0                    ['k_block5c__0se_reduce_group_interconn[0][0]',             
+                                                                                                                         'k_block5c__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block5c__0se_expand_conv (Conv2D)                       (None, 1, 1, 672)                       19488                ['k_block5c__0se_reduce_inter_group_add[0][0]']             
+                                                                                                                                                                                    
+ k_block5c__0se_expand (Activation)                        (None, 1, 1, 672)                       0                    ['k_block5c__0se_expand_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block5c__0se_excite (Multiply)                          (None, 16, 16, 672)                     0                    ['k_block5c__0activation[0][0]',                            
+                                                                                                                         'k_block5c__0se_expand[0][0]']                             
+                                                                                                                                                                                    
+ k_block5c__0project_conv_conv (Conv2D)                    (None, 16, 16, 112)                     2688                 ['k_block5c__0se_excite[0][0]']                             
+                                                                                                                                                                                    
+ k_block5c__0project_conv_bn (BatchNormalization)          (None, 16, 16, 112)                     448                  ['k_block5c__0project_conv_conv[0][0]']                     
+                                                                                                                                                                                    
+ k_block5c__0project_conv_group_interleaved (InterleaveCha  (None, 16, 16, 112)                    0                    ['k_block5c__0project_conv_bn[0][0]']                       
+ nnels)                                                                                                                                                                             
+                                                                                                                                                                                    
+ k_block5c__0project_conv_group_interconn_conv (Conv2D)    (None, 16, 16, 112)                     448                  ['k_block5c__0project_conv_group_interleaved[0][0]']        
+                                                                                                                                                                                    
+ k_block5c__0project_conv_group_interconn_bn (BatchNormali  (None, 16, 16, 112)                    448                  ['k_block5c__0project_conv_group_interconn_conv[0][0]']     
+ zation)                                                                                                                                                                            
+                                                                                                                                                                                    
+ k_block5c__0project_conv_inter_group_add (Add)            (None, 16, 16, 112)                     0                    ['k_block5c__0project_conv_group_interconn_bn[0][0]',       
+                                                                                                                         'k_block5c__0project_conv_bn[0][0]']                       
+                                                                                                                                                                                    
+ k_block5c__0drop (Dropout)                                (None, 16, 16, 112)                     0                    ['k_block5c__0project_conv_inter_group_add[0][0]']          
+                                                                                                                                                                                    
+ k_block5c__0add (Add)                                     (None, 16, 16, 112)                     0                    ['k_block5c__0drop[0][0]',                                  
+                                                                                                                         'k_block5b__0add[0][0]']                                   
+                                                                                                                                                                                    
+ k_block6a__0expand_conv (Conv2D)                          (None, 16, 16, 672)                     10752                ['k_block5c__0add[0][0]']                                   
+                                                                                                                                                                                    
+ k_block6a__0expand_bn (BatchNormalization)                (None, 16, 16, 672)                     2688                 ['k_block6a__0expand_conv[0][0]']                           
+                                                                                                                                                                                    
+ k_block6a__0expand (Activation)                           (None, 16, 16, 672)                     0                    ['k_block6a__0expand_bn[0][0]']                             
+                                                                                                                                                                                    
+ k_block6a__0expand_group_interleaved (InterleaveChannels)  (None, 16, 16, 672)                    0                    ['k_block6a__0expand[0][0]']                                
+                                                                                                                                                                                    
+ k_block6a__0dwconv_pad (ZeroPadding2D)                    (None, 19, 19, 672)                     0                    ['k_block6a__0expand_group_interleaved[0][0]']              
+                                                                                                                                                                                    
+ k_block6a__0dwconv (DepthwiseConv2D)                      (None, 8, 8, 672)                       16800                ['k_block6a__0dwconv_pad[0][0]']                            
+                                                                                                                                                                                    
+ k_block6a__0bn (BatchNormalization)                       (None, 8, 8, 672)                       2688                 ['k_block6a__0dwconv[0][0]']                                
+                                                                                                                                                                                    
+ k_block6a__0activation (Activation)                       (None, 8, 8, 672)                       0                    ['k_block6a__0bn[0][0]']                                    
+                                                                                                                                                                                    
+ k_block6a__0se_squeeze (GlobalAveragePooling2D)           (None, 672)                             0                    ['k_block6a__0activation[0][0]']                            
+                                                                                                                                                                                    
+ k_block6a__0se_reshape (Reshape)                          (None, 1, 1, 672)                       0                    ['k_block6a__0se_squeeze[0][0]']                            
+                                                                                                                                                                                    
+ k_block6a__0se_reduce_conv (Conv2D)                       (None, 1, 1, 28)                        700                  ['k_block6a__0se_reshape[0][0]']                            
+                                                                                                                                                                                    
+ k_block6a__0se_reduce (Activation)                        (None, 1, 1, 28)                        0                    ['k_block6a__0se_reduce_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block6a__0se_reduce_group_interconn_conv (Conv2D)       (None, 1, 1, 28)                        56                   ['k_block6a__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block6a__0se_reduce_group_interconn (Activation)        (None, 1, 1, 28)                        0                    ['k_block6a__0se_reduce_group_interconn_conv[0][0]']        
+                                                                                                                                                                                    
+ k_block6a__0se_reduce_inter_group_add (Add)               (None, 1, 1, 28)                        0                    ['k_block6a__0se_reduce_group_interconn[0][0]',             
+                                                                                                                         'k_block6a__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block6a__0se_expand_conv (Conv2D)                       (None, 1, 1, 672)                       19488                ['k_block6a__0se_reduce_inter_group_add[0][0]']             
+                                                                                                                                                                                    
+ k_block6a__0se_expand (Activation)                        (None, 1, 1, 672)                       0                    ['k_block6a__0se_expand_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block6a__0se_excite (Multiply)                          (None, 8, 8, 672)                       0                    ['k_block6a__0activation[0][0]',                            
+                                                                                                                         'k_block6a__0se_expand[0][0]']                             
+                                                                                                                                                                                    
+ k_block6a__0project_conv_conv (Conv2D)                    (None, 8, 8, 192)                       4032                 ['k_block6a__0se_excite[0][0]']                             
+                                                                                                                                                                                    
+ k_block6a__0project_conv_bn (BatchNormalization)          (None, 8, 8, 192)                       768                  ['k_block6a__0project_conv_conv[0][0]']                     
+                                                                                                                                                                                    
+ k_block6a__0project_conv_group_interleaved (InterleaveCha  (None, 8, 8, 192)                      0                    ['k_block6a__0project_conv_bn[0][0]']                       
+ nnels)                                                                                                                                                                             
+                                                                                                                                                                                    
+ k_block6a__0project_conv_group_interconn_conv (Conv2D)    (None, 8, 8, 192)                       1152                 ['k_block6a__0project_conv_group_interleaved[0][0]']        
+                                                                                                                                                                                    
+ k_block6a__0project_conv_group_interconn_bn (BatchNormali  (None, 8, 8, 192)                      768                  ['k_block6a__0project_conv_group_interconn_conv[0][0]']     
+ zation)                                                                                                                                                                            
+                                                                                                                                                                                    
+ k_block6a__0project_conv_inter_group_add (Add)            (None, 8, 8, 192)                       0                    ['k_block6a__0project_conv_group_interconn_bn[0][0]',       
+                                                                                                                         'k_block6a__0project_conv_bn[0][0]']                       
+                                                                                                                                                                                    
+ k_block6b__0expand_conv (Conv2D)                          (None, 8, 8, 1152)                      18432                ['k_block6a__0project_conv_inter_group_add[0][0]']          
+                                                                                                                                                                                    
+ k_block6b__0expand_bn (BatchNormalization)                (None, 8, 8, 1152)                      4608                 ['k_block6b__0expand_conv[0][0]']                           
+                                                                                                                                                                                    
+ k_block6b__0expand (Activation)                           (None, 8, 8, 1152)                      0                    ['k_block6b__0expand_bn[0][0]']                             
+                                                                                                                                                                                    
+ k_block6b__0expand_group_interleaved (InterleaveChannels)  (None, 8, 8, 1152)                     0                    ['k_block6b__0expand[0][0]']                                
+                                                                                                                                                                                    
+ k_block6b__0dwconv (DepthwiseConv2D)                      (None, 8, 8, 1152)                      28800                ['k_block6b__0expand_group_interleaved[0][0]']              
+                                                                                                                                                                                    
+ k_block6b__0bn (BatchNormalization)                       (None, 8, 8, 1152)                      4608                 ['k_block6b__0dwconv[0][0]']                                
+                                                                                                                                                                                    
+ k_block6b__0activation (Activation)                       (None, 8, 8, 1152)                      0                    ['k_block6b__0bn[0][0]']                                    
+                                                                                                                                                                                    
+ k_block6b__0se_squeeze (GlobalAveragePooling2D)           (None, 1152)                            0                    ['k_block6b__0activation[0][0]']                            
+                                                                                                                                                                                    
+ k_block6b__0se_reshape (Reshape)                          (None, 1, 1, 1152)                      0                    ['k_block6b__0se_squeeze[0][0]']                            
+                                                                                                                                                                                    
+ k_block6b__0se_reduce_conv (Conv2D)                       (None, 1, 1, 48)                        1200                 ['k_block6b__0se_reshape[0][0]']                            
+                                                                                                                                                                                    
+ k_block6b__0se_reduce (Activation)                        (None, 1, 1, 48)                        0                    ['k_block6b__0se_reduce_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block6b__0se_reduce_group_interconn_conv (Conv2D)       (None, 1, 1, 48)                        96                   ['k_block6b__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block6b__0se_reduce_group_interconn (Activation)        (None, 1, 1, 48)                        0                    ['k_block6b__0se_reduce_group_interconn_conv[0][0]']        
+                                                                                                                                                                                    
+ k_block6b__0se_reduce_inter_group_add (Add)               (None, 1, 1, 48)                        0                    ['k_block6b__0se_reduce_group_interconn[0][0]',             
+                                                                                                                         'k_block6b__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block6b__0se_expand_conv (Conv2D)                       (None, 1, 1, 1152)                      19584                ['k_block6b__0se_reduce_inter_group_add[0][0]']             
+                                                                                                                                                                                    
+ k_block6b__0se_expand (Activation)                        (None, 1, 1, 1152)                      0                    ['k_block6b__0se_expand_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block6b__0se_expand_group_interleaved (InterleaveChanne  (None, 1, 1, 1152)                     0                    ['k_block6b__0se_expand[0][0]']                             
+ ls)                                                                                                                                                                                
+                                                                                                                                                                                    
+ k_block6b__0se_excite (Multiply)                          (None, 8, 8, 1152)                      0                    ['k_block6b__0activation[0][0]',                            
+                                                                                                                         'k_block6b__0se_expand_group_interleaved[0][0]']           
+                                                                                                                                                                                    
+ k_block6b__0project_conv_conv (Conv2D)                    (None, 8, 8, 192)                       3456                 ['k_block6b__0se_excite[0][0]']                             
+                                                                                                                                                                                    
+ k_block6b__0project_conv_bn (BatchNormalization)          (None, 8, 8, 192)                       768                  ['k_block6b__0project_conv_conv[0][0]']                     
+                                                                                                                                                                                    
+ k_block6b__0project_conv_group_interleaved (InterleaveCha  (None, 8, 8, 192)                      0                    ['k_block6b__0project_conv_bn[0][0]']                       
+ nnels)                                                                                                                                                                             
+                                                                                                                                                                                    
+ k_block6b__0project_conv_group_interconn_conv (Conv2D)    (None, 8, 8, 192)                       576                  ['k_block6b__0project_conv_group_interleaved[0][0]']        
+                                                                                                                                                                                    
+ k_block6b__0project_conv_group_interconn_bn (BatchNormali  (None, 8, 8, 192)                      768                  ['k_block6b__0project_conv_group_interconn_conv[0][0]']     
+ zation)                                                                                                                                                                            
+                                                                                                                                                                                    
+ k_block6b__0project_conv_inter_group_add (Add)            (None, 8, 8, 192)                       0                    ['k_block6b__0project_conv_group_interconn_bn[0][0]',       
+                                                                                                                         'k_block6b__0project_conv_bn[0][0]']                       
+                                                                                                                                                                                    
+ k_block6b__0drop (Dropout)                                (None, 8, 8, 192)                       0                    ['k_block6b__0project_conv_inter_group_add[0][0]']          
+                                                                                                                                                                                    
+ k_block6b__0add (Add)                                     (None, 8, 8, 192)                       0                    ['k_block6b__0drop[0][0]',                                  
+                                                                                                                         'k_block6a__0project_conv_inter_group_add[0][0]']          
+                                                                                                                                                                                    
+ k_block6c__0expand_conv (Conv2D)                          (None, 8, 8, 1152)                      18432                ['k_block6b__0add[0][0]']                                   
+                                                                                                                                                                                    
+ k_block6c__0expand_bn (BatchNormalization)                (None, 8, 8, 1152)                      4608                 ['k_block6c__0expand_conv[0][0]']                           
+                                                                                                                                                                                    
+ k_block6c__0expand (Activation)                           (None, 8, 8, 1152)                      0                    ['k_block6c__0expand_bn[0][0]']                             
+                                                                                                                                                                                    
+ k_block6c__0expand_group_interleaved (InterleaveChannels)  (None, 8, 8, 1152)                     0                    ['k_block6c__0expand[0][0]']                                
+                                                                                                                                                                                    
+ k_block6c__0dwconv (DepthwiseConv2D)                      (None, 8, 8, 1152)                      28800                ['k_block6c__0expand_group_interleaved[0][0]']              
+                                                                                                                                                                                    
+ k_block6c__0bn (BatchNormalization)                       (None, 8, 8, 1152)                      4608                 ['k_block6c__0dwconv[0][0]']                                
+                                                                                                                                                                                    
+ k_block6c__0activation (Activation)                       (None, 8, 8, 1152)                      0                    ['k_block6c__0bn[0][0]']                                    
+                                                                                                                                                                                    
+ k_block6c__0se_squeeze (GlobalAveragePooling2D)           (None, 1152)                            0                    ['k_block6c__0activation[0][0]']                            
+                                                                                                                                                                                    
+ k_block6c__0se_reshape (Reshape)                          (None, 1, 1, 1152)                      0                    ['k_block6c__0se_squeeze[0][0]']                            
+                                                                                                                                                                                    
+ k_block6c__0se_reduce_conv (Conv2D)                       (None, 1, 1, 48)                        1200                 ['k_block6c__0se_reshape[0][0]']                            
+                                                                                                                                                                                    
+ k_block6c__0se_reduce (Activation)                        (None, 1, 1, 48)                        0                    ['k_block6c__0se_reduce_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block6c__0se_reduce_group_interconn_conv (Conv2D)       (None, 1, 1, 48)                        96                   ['k_block6c__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block6c__0se_reduce_group_interconn (Activation)        (None, 1, 1, 48)                        0                    ['k_block6c__0se_reduce_group_interconn_conv[0][0]']        
+                                                                                                                                                                                    
+ k_block6c__0se_reduce_inter_group_add (Add)               (None, 1, 1, 48)                        0                    ['k_block6c__0se_reduce_group_interconn[0][0]',             
+                                                                                                                         'k_block6c__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block6c__0se_expand_conv (Conv2D)                       (None, 1, 1, 1152)                      19584                ['k_block6c__0se_reduce_inter_group_add[0][0]']             
+                                                                                                                                                                                    
+ k_block6c__0se_expand (Activation)                        (None, 1, 1, 1152)                      0                    ['k_block6c__0se_expand_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block6c__0se_expand_group_interleaved (InterleaveChanne  (None, 1, 1, 1152)                     0                    ['k_block6c__0se_expand[0][0]']                             
+ ls)                                                                                                                                                                                
+                                                                                                                                                                                    
+ k_block6c__0se_excite (Multiply)                          (None, 8, 8, 1152)                      0                    ['k_block6c__0activation[0][0]',                            
+                                                                                                                         'k_block6c__0se_expand_group_interleaved[0][0]']           
+                                                                                                                                                                                    
+ k_block6c__0project_conv_conv (Conv2D)                    (None, 8, 8, 192)                       3456                 ['k_block6c__0se_excite[0][0]']                             
+                                                                                                                                                                                    
+ k_block6c__0project_conv_bn (BatchNormalization)          (None, 8, 8, 192)                       768                  ['k_block6c__0project_conv_conv[0][0]']                     
+                                                                                                                                                                                    
+ k_block6c__0project_conv_group_interleaved (InterleaveCha  (None, 8, 8, 192)                      0                    ['k_block6c__0project_conv_bn[0][0]']                       
+ nnels)                                                                                                                                                                             
+                                                                                                                                                                                    
+ k_block6c__0project_conv_group_interconn_conv (Conv2D)    (None, 8, 8, 192)                       576                  ['k_block6c__0project_conv_group_interleaved[0][0]']        
+                                                                                                                                                                                    
+ k_block6c__0project_conv_group_interconn_bn (BatchNormali  (None, 8, 8, 192)                      768                  ['k_block6c__0project_conv_group_interconn_conv[0][0]']     
+ zation)                                                                                                                                                                            
+                                                                                                                                                                                    
+ k_block6c__0project_conv_inter_group_add (Add)            (None, 8, 8, 192)                       0                    ['k_block6c__0project_conv_group_interconn_bn[0][0]',       
+                                                                                                                         'k_block6c__0project_conv_bn[0][0]']                       
+                                                                                                                                                                                    
+ k_block6c__0drop (Dropout)                                (None, 8, 8, 192)                       0                    ['k_block6c__0project_conv_inter_group_add[0][0]']          
+                                                                                                                                                                                    
+ k_block6c__0add (Add)                                     (None, 8, 8, 192)                       0                    ['k_block6c__0drop[0][0]',                                  
+                                                                                                                         'k_block6b__0add[0][0]']                                   
+                                                                                                                                                                                    
+ k_block6d__0expand_conv (Conv2D)                          (None, 8, 8, 1152)                      18432                ['k_block6c__0add[0][0]']                                   
+                                                                                                                                                                                    
+ k_block6d__0expand_bn (BatchNormalization)                (None, 8, 8, 1152)                      4608                 ['k_block6d__0expand_conv[0][0]']                           
+                                                                                                                                                                                    
+ k_block6d__0expand (Activation)                           (None, 8, 8, 1152)                      0                    ['k_block6d__0expand_bn[0][0]']                             
+                                                                                                                                                                                    
+ k_block6d__0expand_group_interleaved (InterleaveChannels)  (None, 8, 8, 1152)                     0                    ['k_block6d__0expand[0][0]']                                
+                                                                                                                                                                                    
+ k_block6d__0dwconv (DepthwiseConv2D)                      (None, 8, 8, 1152)                      28800                ['k_block6d__0expand_group_interleaved[0][0]']              
+                                                                                                                                                                                    
+ k_block6d__0bn (BatchNormalization)                       (None, 8, 8, 1152)                      4608                 ['k_block6d__0dwconv[0][0]']                                
+                                                                                                                                                                                    
+ k_block6d__0activation (Activation)                       (None, 8, 8, 1152)                      0                    ['k_block6d__0bn[0][0]']                                    
+                                                                                                                                                                                    
+ k_block6d__0se_squeeze (GlobalAveragePooling2D)           (None, 1152)                            0                    ['k_block6d__0activation[0][0]']                            
+                                                                                                                                                                                    
+ k_block6d__0se_reshape (Reshape)                          (None, 1, 1, 1152)                      0                    ['k_block6d__0se_squeeze[0][0]']                            
+                                                                                                                                                                                    
+ k_block6d__0se_reduce_conv (Conv2D)                       (None, 1, 1, 48)                        1200                 ['k_block6d__0se_reshape[0][0]']                            
+                                                                                                                                                                                    
+ k_block6d__0se_reduce (Activation)                        (None, 1, 1, 48)                        0                    ['k_block6d__0se_reduce_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block6d__0se_reduce_group_interconn_conv (Conv2D)       (None, 1, 1, 48)                        96                   ['k_block6d__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block6d__0se_reduce_group_interconn (Activation)        (None, 1, 1, 48)                        0                    ['k_block6d__0se_reduce_group_interconn_conv[0][0]']        
+                                                                                                                                                                                    
+ k_block6d__0se_reduce_inter_group_add (Add)               (None, 1, 1, 48)                        0                    ['k_block6d__0se_reduce_group_interconn[0][0]',             
+                                                                                                                         'k_block6d__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block6d__0se_expand_conv (Conv2D)                       (None, 1, 1, 1152)                      19584                ['k_block6d__0se_reduce_inter_group_add[0][0]']             
+                                                                                                                                                                                    
+ k_block6d__0se_expand (Activation)                        (None, 1, 1, 1152)                      0                    ['k_block6d__0se_expand_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block6d__0se_expand_group_interleaved (InterleaveChanne  (None, 1, 1, 1152)                     0                    ['k_block6d__0se_expand[0][0]']                             
+ ls)                                                                                                                                                                                
+                                                                                                                                                                                    
+ k_block6d__0se_excite (Multiply)                          (None, 8, 8, 1152)                      0                    ['k_block6d__0activation[0][0]',                            
+                                                                                                                         'k_block6d__0se_expand_group_interleaved[0][0]']           
+                                                                                                                                                                                    
+ k_block6d__0project_conv_conv (Conv2D)                    (None, 8, 8, 192)                       3456                 ['k_block6d__0se_excite[0][0]']                             
+                                                                                                                                                                                    
+ k_block6d__0project_conv_bn (BatchNormalization)          (None, 8, 8, 192)                       768                  ['k_block6d__0project_conv_conv[0][0]']                     
+                                                                                                                                                                                    
+ k_block6d__0project_conv_group_interleaved (InterleaveCha  (None, 8, 8, 192)                      0                    ['k_block6d__0project_conv_bn[0][0]']                       
+ nnels)                                                                                                                                                                             
+                                                                                                                                                                                    
+ k_block6d__0project_conv_group_interconn_conv (Conv2D)    (None, 8, 8, 192)                       576                  ['k_block6d__0project_conv_group_interleaved[0][0]']        
+                                                                                                                                                                                    
+ k_block6d__0project_conv_group_interconn_bn (BatchNormali  (None, 8, 8, 192)                      768                  ['k_block6d__0project_conv_group_interconn_conv[0][0]']     
+ zation)                                                                                                                                                                            
+                                                                                                                                                                                    
+ k_block6d__0project_conv_inter_group_add (Add)            (None, 8, 8, 192)                       0                    ['k_block6d__0project_conv_group_interconn_bn[0][0]',       
+                                                                                                                         'k_block6d__0project_conv_bn[0][0]']                       
+                                                                                                                                                                                    
+ k_block6d__0drop (Dropout)                                (None, 8, 8, 192)                       0                    ['k_block6d__0project_conv_inter_group_add[0][0]']          
+                                                                                                                                                                                    
+ k_block6d__0add (Add)                                     (None, 8, 8, 192)                       0                    ['k_block6d__0drop[0][0]',                                  
+                                                                                                                         'k_block6c__0add[0][0]']                                   
+                                                                                                                                                                                    
+ k_block7a__0expand_conv (Conv2D)                          (None, 8, 8, 1152)                      18432                ['k_block6d__0add[0][0]']                                   
+                                                                                                                                                                                    
+ k_block7a__0expand_bn (BatchNormalization)                (None, 8, 8, 1152)                      4608                 ['k_block7a__0expand_conv[0][0]']                           
+                                                                                                                                                                                    
+ k_block7a__0expand (Activation)                           (None, 8, 8, 1152)                      0                    ['k_block7a__0expand_bn[0][0]']                             
+                                                                                                                                                                                    
+ k_block7a__0expand_group_interleaved (InterleaveChannels)  (None, 8, 8, 1152)                     0                    ['k_block7a__0expand[0][0]']                                
+                                                                                                                                                                                    
+ k_block7a__0dwconv (DepthwiseConv2D)                      (None, 8, 8, 1152)                      10368                ['k_block7a__0expand_group_interleaved[0][0]']              
+                                                                                                                                                                                    
+ k_block7a__0bn (BatchNormalization)                       (None, 8, 8, 1152)                      4608                 ['k_block7a__0dwconv[0][0]']                                
+                                                                                                                                                                                    
+ k_block7a__0activation (Activation)                       (None, 8, 8, 1152)                      0                    ['k_block7a__0bn[0][0]']                                    
+                                                                                                                                                                                    
+ k_block7a__0se_squeeze (GlobalAveragePooling2D)           (None, 1152)                            0                    ['k_block7a__0activation[0][0]']                            
+                                                                                                                                                                                    
+ k_block7a__0se_reshape (Reshape)                          (None, 1, 1, 1152)                      0                    ['k_block7a__0se_squeeze[0][0]']                            
+                                                                                                                                                                                    
+ k_block7a__0se_reduce_conv (Conv2D)                       (None, 1, 1, 48)                        1200                 ['k_block7a__0se_reshape[0][0]']                            
+                                                                                                                                                                                    
+ k_block7a__0se_reduce (Activation)                        (None, 1, 1, 48)                        0                    ['k_block7a__0se_reduce_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block7a__0se_reduce_group_interconn_conv (Conv2D)       (None, 1, 1, 48)                        96                   ['k_block7a__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block7a__0se_reduce_group_interconn (Activation)        (None, 1, 1, 48)                        0                    ['k_block7a__0se_reduce_group_interconn_conv[0][0]']        
+                                                                                                                                                                                    
+ k_block7a__0se_reduce_inter_group_add (Add)               (None, 1, 1, 48)                        0                    ['k_block7a__0se_reduce_group_interconn[0][0]',             
+                                                                                                                         'k_block7a__0se_reduce[0][0]']                             
+                                                                                                                                                                                    
+ k_block7a__0se_expand_conv (Conv2D)                       (None, 1, 1, 1152)                      19584                ['k_block7a__0se_reduce_inter_group_add[0][0]']             
+                                                                                                                                                                                    
+ k_block7a__0se_expand (Activation)                        (None, 1, 1, 1152)                      0                    ['k_block7a__0se_expand_conv[0][0]']                        
+                                                                                                                                                                                    
+ k_block7a__0se_expand_group_interleaved (InterleaveChanne  (None, 1, 1, 1152)                     0                    ['k_block7a__0se_expand[0][0]']                             
+ ls)                                                                                                                                                                                
+                                                                                                                                                                                    
+ k_block7a__0se_excite (Multiply)                          (None, 8, 8, 1152)                      0                    ['k_block7a__0activation[0][0]',                            
+                                                                                                                         'k_block7a__0se_expand_group_interleaved[0][0]']           
+                                                                                                                                                                                    
+ k_block7a__0project_conv_conv (Conv2D)                    (None, 8, 8, 320)                       5760                 ['k_block7a__0se_excite[0][0]']                             
+                                                                                                                                                                                    
+ k_block7a__0project_conv_bn (BatchNormalization)          (None, 8, 8, 320)                       1280                 ['k_block7a__0project_conv_conv[0][0]']                     
+                                                                                                                                                                                    
+ k_block7a__0project_conv_group_interleaved (InterleaveCha  (None, 8, 8, 320)                      0                    ['k_block7a__0project_conv_bn[0][0]']                       
+ nnels)                                                                                                                                                                             
+                                                                                                                                                                                    
+ k_block7a__0project_conv_group_interconn_conv (Conv2D)    (None, 8, 8, 320)                       1600                 ['k_block7a__0project_conv_group_interleaved[0][0]']        
+                                                                                                                                                                                    
+ k_block7a__0project_conv_group_interconn_bn (BatchNormali  (None, 8, 8, 320)                      1280                 ['k_block7a__0project_conv_group_interconn_conv[0][0]']     
+ zation)                                                                                                                                                                            
+                                                                                                                                                                                    
+ k_block7a__0project_conv_inter_group_add (Add)            (None, 8, 8, 320)                       0                    ['k_block7a__0project_conv_group_interconn_bn[0][0]',       
+                                                                                                                         'k_block7a__0project_conv_bn[0][0]']                       
+                                                                                                                                                                                    
+ k_top_conv_conv (Conv2D)                                  (None, 8, 8, 1280)                      20480                ['k_block7a__0project_conv_inter_group_add[0][0]']          
+                                                                                                                                                                                    
+ k_top_conv_bn (BatchNormalization)                        (None, 8, 8, 1280)                      5120                 ['k_top_conv_conv[0][0]']                                   
+                                                                                                                                                                                    
+ k_top_conv_group_interleaved (InterleaveChannels)         (None, 8, 8, 1280)                      0                    ['k_top_conv_bn[0][0]']                                     
+                                                                                                                                                                                    
+ k_avg_pool (GlobalAveragePooling2D)                       (None, 1280)                            0                    ['k_top_conv_group_interleaved[0][0]']                      
+                                                                                                                                                                                    
+ k_top_dropout (Dropout)                                   (None, 1280)                            0                    ['k_avg_pool[0][0]']                                        
+                                                                                                                                                                                    
+ k_probs (Dense)                                           (None, 10)                              12810                ['k_top_dropout[0][0]']                                     
+                                                                                                                                                                                    
+====================================================================================================================================================================================
+Total params: 685,334
+Trainable params: 639,702
+Non-trainable params: 45,632
+____________________________________________________________________________________________________________________________________________________________________________________
+Finished: kEffNetV1-2
